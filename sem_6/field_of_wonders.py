@@ -17,6 +17,8 @@ def move_of_player(word, quest_word):
     print()
     print('Ваш ход \n')
     letter = input('Буква: ')
+    if letter not in word:
+        print('Такой буквы в слове нет')
     if letter in quest_word:
         print('Такая буква уже есть в слове!')
     start = 0
@@ -29,31 +31,16 @@ def move_of_player(word, quest_word):
             
 
 
-def spin_reel(word, quest_word):
-    reel = ['Сектор Приз', 'Сектор "+"', '50', '100', '150', '200', '250', '300', '350']
+def spin_reel():
+    reel = ['Сектор Приз', '50', '100', '150', '200', '250', '300', '350']
     print('Крутим барабан')
     spin = random.choice(reel)
     print(f'На барабане {spin}')
     if spin.isdigit():
         return int(spin)
-    elif spin == 'Сектор Приз':
+    else:
         print('Вы выиграли котика!')
         return print_cat()
-    else:
-        open_letter = int(input('Введите номер буквы, которую хотите открыть: '))
-        letter = word[open_letter - 1]
-        if word.count(letter) > 1:
-            for char in word:
-                if char == letter:
-                    ind = word.index(char)
-                    quest_word = quest_word[:ind] + letter + quest_word[ind + 1:]
-                    print(quest_word)
-                return quest_word
-        else:
-            ind = word.index(letter)
-            quest_word = quest_word[:ind] + letter + quest_word[ind + 1:]
-            print(quest_word)
-            return quest_word
 
 def move_of_computer(word, quest_word):
     print()
@@ -61,13 +48,17 @@ def move_of_computer(word, quest_word):
     alphabet = 'абвгдеёжзийклмопрстуфхцчшщъьыэюя'
     index = random.randint(0, len(alphabet) - 1)
     letter = alphabet[index]
+    if letter not in word:
+        print('Не угадал букву')
+    else:
+        print('Угадал букву')
     start = 0
     for char in word:
         if char == letter:
             ind = word.find(letter, start)
             quest_word = quest_word[:ind] + letter + quest_word[ind + 1:]
             start = ind + 1
-    alphabet.replace(letter, '')
+    alphabet = alphabet.replace(letter, '')
     return quest_word
     
 
@@ -88,9 +79,7 @@ sum_of_points_of_gamer = 0
 sum_of_points_of_computer = 0
 
 while True:
-    sp = spin_reel(word, question_word)
-    if not check_word(question_word):
-        break
+    sp = spin_reel()
     if type(sp) is int:
         sum_of_points_of_gamer += sp
         print(f'У вас {sum_of_points_of_gamer} очков')
@@ -100,8 +89,9 @@ while True:
     question_word =  move_of_player(word, question_word)
     print(question_word)
     if not check_word(question_word):
+        print(f'Вы победили! Итог: {sum_of_points_of_gamer} очков!!')
         break
-    sp_2 = spin_reel(word, question_word)
+    sp_2 = spin_reel()
     if type(sp_2) is int:
         sum_of_points_of_computer += sp_2
         print(f'У компьютера {sum_of_points_of_computer} очков')
@@ -110,4 +100,5 @@ while True:
     question_word = move_of_computer(word, question_word)
     print(question_word)
     if not check_word(question_word):
+        print(f'Компьютер победил! Итог: {sum_of_points_of_computer} очков!!')
         break
